@@ -439,6 +439,10 @@ int smblib_get_prop_input_suspend(struct smb_charger *chg,
 int smblib_get_prop_charging_enabled(struct smb_charger *chg,
 				union power_supply_propval *val);
 /* Huaqin add for ZQL1650-189 by diganyun at 2018/02/01 end */
+/* Huaqin modify for ZQL1820-HQ000002 Identify adapter ID to upper by gaochao at 2018/10/24 start */
+int smblib_get_prop_adapter_id(struct smb_charger *chg,
+				union power_supply_propval *val);
+/* Huaqin modify for ZQL1820-HQ000002 Identify adapter ID to upper by gaochao at 2018/10/24 end */
 int smblib_get_prop_batt_present(struct smb_charger *chg,
 				union power_supply_propval *val);
 int smblib_get_prop_batt_capacity(struct smb_charger *chg,

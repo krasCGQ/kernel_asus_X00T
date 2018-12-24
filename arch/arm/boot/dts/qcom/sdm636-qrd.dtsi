@@ -411,10 +411,6 @@ synaptics_dsx@70 {
 /* Huaqin modify for ZQL1650 by diganyun at 2018/05/26  end */
 		vdd-supply = <&pm660_l11>;
 		avdd-supply = <&pm660l_l3>;
-// Huaqin add for vsp/vsn. by zhengwu.lu. at 2018/03/07  start
-		lcm_lab-supply = <&lcdb_ldo_vreg>;
-		lcm_ibb-supply = <&lcdb_ncp_vreg>;
-// Huaqin add for vsp/vsn. by zhengwu.lu. at 2018/03/07  end
 /*
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
 	        pinctrl-0 = <&ts_active>;

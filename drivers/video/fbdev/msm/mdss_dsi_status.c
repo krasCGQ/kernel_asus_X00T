@@ -30,7 +30,7 @@
 #include "mdss_panel.h"
 #include "mdss_mdp.h"
 /* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 start */
-#define STATUS_CHECK_INTERVAL_MS 500
+#define STATUS_CHECK_INTERVAL_MS 2000
 /* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 end */
 #define STATUS_CHECK_INTERVAL_MIN_MS 50
 #define DSI_STATUS_CHECK_INIT -1

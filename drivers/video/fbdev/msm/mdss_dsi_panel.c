@@ -37,6 +37,9 @@
 /* Huaqin modify for Modification sequence by qimaokang at 2018/05/31 start */
 extern char mdss_mdp_panel[MDSS_MAX_PANEL_LEN];
 /* Huaqin modify for Modification sequence by qimaokang at 2018/05/31 end */
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 start*/
+extern bool shutdown_flag;
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 end*/
 DEFINE_LED_TRIGGER(bl_led_trigger);
 
 void mdss_dsi_panel_pwm_cfg(struct mdss_dsi_ctrl_pdata *ctrl)
@@ -378,9 +381,7 @@ free:
 ret:
 	return rc;
 }
-/* Huaqin modify for ZQL1650-1523 by zhangxiude at 2018/07/18 start */
-extern long syna_gesture_mode;
-/* Huaqin modify for ZQL1650-1523 by zhangxiude at 2018/07/18 end */
+
 int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 {
 	struct mdss_dsi_ctrl_pdata *ctrl_pdata = NULL;
@@ -505,25 +506,19 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 			gpio_set_value((ctrl_pdata->disp_en_gpio), 0);
 			gpio_free(ctrl_pdata->disp_en_gpio);
 		}
-		/* Huaqin modify for Modification sequence by qimaokang at 2018/05/31 start */
-		printk("qimk panel name:%s\n",mdss_mdp_panel);
-		if(strstr(mdss_mdp_panel,"qcom,mdss_dsi_td4310_1080p_video_txd"))
-		{
-/* Huaqin modify for ZQL1650-1523 by zhangxiude at 2018/07/18 start */
-			if(syna_gesture_mode == 0)
-			{
-			    gpio_set_value((ctrl_pdata->rst_gpio), 0);
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 start*/
+		if(shutdown_flag) {
+			gpio_set_value((ctrl_pdata->rst_gpio), 0);
+/* Huaqin modify for time sequence by qimaokang at 2018/10/16 start*/
+			rc = gpio_request_one(ctrl_pdata->tp_rst_gpio, GPIOF_OUT_INIT_LOW, "himax-tp-rst");
+			if (rc) {
+				pr_err("%s:Failed to request NVT-tp-rst GPIO\n", __func__);
+				gpio_free(ctrl_pdata->tp_rst_gpio);
+				gpio_request_one(ctrl_pdata->tp_rst_gpio, GPIOF_OUT_INIT_LOW, "himax-tp-rst");
 			}
-			else
-			{
-			    gpio_set_value((ctrl_pdata->rst_gpio), 1);
-			}
-/* Huaqin modify for ZQL1650-1523 by zhangxiude at 2018/07/18 end */
-		}else
-		{
-			gpio_set_value((ctrl_pdata->rst_gpio), 1);
+/* Huaqin modify for time sequence by qimaokang at 2018/10/16 end*/
 		}
-		/* Huaqin modify for Modification sequence by qimaokang at 2018/05/31 end */
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 end*/
 		gpio_free(ctrl_pdata->rst_gpio);
 		if (gpio_is_valid(ctrl_pdata->lcd_mode_sel_gpio)) {
 			gpio_set_value(ctrl_pdata->lcd_mode_sel_gpio, 0);
@@ -2062,6 +2057,12 @@ static void mdss_dsi_parse_esd_params(struct device_node *np,
 
 	pinfo->esd_check_enabled = of_property_read_bool(np,
 		"qcom,esd-check-enabled");
+/* Huaqin modify for no panel no esd by qimaokang at 2018/08/10 start */
+	if(strstr(mdss_mdp_panel, "esd_disabled")) {
+		pr_err("qimk no panel no esd\n");
+		pinfo->esd_check_enabled = 0;
+	}
+/* Huaqin modify for no panel no esd by qimaokang at 2018/08/10 end */
 
 	/* Huaqin modify to disable ESD in factory version by xieguoqiang 20170201 start */
 //#ifdef HQ_BUILD_FACTORY

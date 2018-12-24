@@ -53,6 +53,9 @@ static struct mdss_dsi_data *mdss_dsi_res;
 #define DSI_ENABLE_PC_LATENCY PM_QOS_DEFAULT_VALUE
 
 static struct pm_qos_request mdss_dsi_pm_qos_request;
+/* Huaqin add for nvt fw update fail by limengxia at 20181113 start */
+int tp_fw_update_flag = 0;
+/* Huaqin add for nvt fw update fail by limengxia at 20181113 end */
 
 void mdss_dump_dsi_debug_bus(u32 bus_dump_flag,
 	u32 **dump_mem)
@@ -384,6 +387,10 @@ static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 		ret = -EINVAL;
 		goto end;
 	}
+	/* Huaqin add for nvt fw update fail by limengxia at 20181113 start */
+	if(tp_fw_update_flag)
+		return 0;
+	/* Huaqin add for nvt fw update fail by limengxia at 20181113 end */
 
 	ctrl_pdata = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
@@ -402,12 +409,14 @@ static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 	/* Huaqin modify for Modification sequence by qimaokangat 2018/05/31 end  */
 /* Huaqin modify for ZQL1650-1523 by diganyun at 2018/06/07 start */
 	/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 start  */
+	if(strstr(mdss_mdp_panel,"qcom,mdss_dsi_td4310_1080p_video_txd") == NULL ) {
 		ret = msm_dss_enable_vreg(
 			ctrl_pdata->panel_power_data.vreg_config,
 			ctrl_pdata->panel_power_data.num_vreg, 0);
 		if (ret)
 			pr_err("%s: failed to disable vregs for %s\n",
 				__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
+	}
 	/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 end  */
 /* Huaqin modify for ZQL1650-1523 by diganyun at 2018/06/07 end */
 end:
@@ -423,6 +432,10 @@ static int mdss_dsi_panel_power_on(struct mdss_panel_data *pdata)
 		pr_err("%s: Invalid input data\n", __func__);
 		return -EINVAL;
 	}
+	/* Huaqin add for nvt fw update fail by limengxia at 20181113 start */
+	if(tp_fw_update_flag)
+		return 0;
+	/* Huaqin add for nvt fw update fail by limengxia at 20181113 end */
 
 	ctrl_pdata = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
@@ -4340,6 +4353,14 @@ static int mdss_dsi_parse_gpio_params(struct platform_device *ctrl_pdev,
 	if (!gpio_is_valid(ctrl_pdata->rst_gpio))
 		pr_err("%s:%d, reset gpio not specified\n",
 						__func__, __LINE__);
+
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 start*/
+	ctrl_pdata->tp_rst_gpio = of_get_named_gpio(ctrl_pdev->dev.of_node,
+			 "qcom,platform-tp-reset-gpio", 0);
+	if (!gpio_is_valid(ctrl_pdata->tp_rst_gpio))
+		pr_err("%s:%d, tp reset gpio  %d not specified\n",
+						__func__, __LINE__,ctrl_pdata->tp_rst_gpio);
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 end*/
 
 	ctrl_pdata->lcd_mode_sel_gpio = of_get_named_gpio(
 			ctrl_pdev->dev.of_node, "qcom,panel-mode-gpio", 0);

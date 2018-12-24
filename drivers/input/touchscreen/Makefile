@@ -104,3 +104,6 @@ obj-$(CONFIG_TOUCHSCREEN_NT36xxx)	+= NVT_Touch/
 #Huaqin modify for ZQL1650-1357 by diganyun at 2018/05/22 start
 obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_DSX) += synaptics_dsx/
 #Huaqin modify for ZQL1650-1357 by diganyun at 2018/05/22 end
+#Huaqin modify for 1820 by zhangxiude at 2018/09/11 start
+obj-$(CONFIG_TOUCHSCREEN_HIMAX_CHIPSET)	+= hxchipset/
+#Huaqin modify for 1820 by zhangxiude at 2018/19/11 end

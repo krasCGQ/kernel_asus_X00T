@@ -125,38 +125,34 @@
 		qcom,afe-power-off-delay-us = <6>;
 	};
 
-/* Huaqin modify for ZQL1650-143 by wangxiang at 2018/01/23 start */
-	common_fp {
-		compatible = "common,fingerprint";
-		interrupt-parent = <&tlmm>;
-		interrupts = <72 0x0>;
-
-		common,gpio_reset   = <&tlmm 20 0>;
-		common,gpio_irq		= <&tlmm 72 0>;
-		common,gpio_vdd		= <&pm660l_gpios 5 0>;
-		pinctrl-names		=	"commonfp_reset_reset",
-								"commonfp_reset_active",
-								"commonfp_irq_active";
-		pinctrl-0 = <&commonfp_reset_reset>;
-		pinctrl-1 = <&commonfp_reset_active>;
-		pinctrl-2 = <&commonfp_irq_active>;
-	};
-
-	cdfinger_fingerprint {
+/* Huaqin add for ZQL1820-42 by puqirui at 2018/11/01 start */
+	cdfinger_fp {
 		compatible = "cdfinger,fingerprint";
 		interrupt-parent = <&tlmm>;
 		interrupts = <72 0x0>;
-		cdfinger,reset_gpio = <&tlmm 20 0>;
-		cdfinger,gpio_vdd  = <&pm660l_gpios 5 0>;
-		cdfinger,irq_gpio = <&tlmm 72 0>;
-	};
-/* Huaqin modify for ZQL1650-143 by wangxiang at 2018/01/23 end */
 
-/* Huaqin modify for ZQL1650-143 by wangxiang at 2018/02/09 start */
-	goodix_fingerprint {
-		compatible = "goodix,fingerprint";
+		cdfinger,reset_gpio = <&tlmm 20 0>;
+		cdfinger,irq_gpio = <&tlmm 72 0>;
+		cdfinger,gpio_vdd = <&pm660l_gpios 5 0>;
+		pinctrl-names = "cdfinger_active","cdfinger_sleep";
+		pinctrl-0 = <&cdfinger_reset_active &cdfinger_irq_active>;
+		pinctrl-1 = <&cdfinger_reset_sleep &cdfinger_irq_sleep>;
 	};
-/* Huaqin modify for ZQL1650-143 by wangxiang at 2018/02/09 end */
+
+
+        focaltech_fingerprint {
+		compatible = "focaltech,fingerprint";
+		interrupt-parent = <&tlmm>;
+		interrupts = <72 0x0>;
+
+		fp,reset_gpio   = <&tlmm 20 0>;
+		fp,irq_gpio        = <&tlmm 72 0>;
+		fp,vdd_gpio        = <&pm660l_gpios 5 0>;
+		pinctrl-names = "focalfp_active","focalfp_sleep";
+		pinctrl-0 = <&focalfp_reset_active &focalfp_irq_active>;
+		pinctrl-1 = <&focalfp_reset_sleep &focalfp_irq_sleep>;
+	};
+/* Huaqin add for ZQL1820-42 by puqirui at 2018/11/01 end */
 
 };
 
@@ -240,9 +236,11 @@
 	};
 };
 /* Huaqin modify for ZQL1650-141 by chenyijun5 at 2018/02/01 end */
-/* Huaqin modify for ZQL1650-70 Identify Adapter ID by fangaijun at 2018/02/8 start */
+/* Huaqin modify for ZQL1820-HQ000001 Fix the bug of identifying ASUS adapter ID by gaochao at 2018/08/04 start */
+/*
 &pm660_charger {
        ADC_SW_EN-gpios59 = <&tlmm 71 0x0>;
        ADCPWREN_PMI_GP1-gpios34 = <&tlmm 3 0x0>;
 };
-/* Huaqin modify for ZQL1650-70 Identify Adapter ID by fangaijun at 2018/02/8 end */
+*/
+/* Huaqin modify for ZQL1820-HQ000001 Fix the bug of identifying ASUS adapter ID by gaochao at 2018/08/04 end */

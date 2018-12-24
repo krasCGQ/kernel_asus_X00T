@@ -374,6 +374,12 @@
 
 			qcom,wipower-max-uw = <5000000>;
 			dpdm-supply = <&qusb_phy0>;
+
+			/* Huaqin modify for ZQL1820-HQ000001 Fix the bug of identifying ASUS adapter ID by gaochao at 2018/08/04 start */
+			ADC_SW_EN-gpios59 = <&tlmm 71 0x0>;
+			ADCPWREN_PMI_GP1-gpios34 = <&tlmm 3 0x0>;
+			/* Huaqin modify for ZQL1820-HQ000001 Fix the bug of identifying ASUS adapter ID by gaochao at 2018/08/04 end */
+
 /* Huaqin modify for ZQL1650-70 Identify Adapter ID by fangaijun at 2018/02/8 start */
 			qcom,thermal-mitigation
 					= <3000000 2500000 2000000 1500000
@@ -513,7 +519,9 @@
 		pm660_pdphy: qcom,usb-pdphy@1700 {
 			compatible = "qcom,qpnp-pdphy";
 			// Added by huqinmin remove Type-C for micro-usb 2018/1/31 begin
-			status = "disable";
+			/* Huaqin modify for ZQL1820-HQ000003 Optimize power consumption by diabling TYPE-C by gaochao at 2018/09/17 start */
+			status = "disabled";
+			/* Huaqin modify for ZQL1820-HQ000003 Optimize power consumption by diabling TYPE-C by gaochao at 2018/09/17 end */
 			// Added by huqinmin remove Type-C for micro-usb 2018/1/31 end
 			reg = <0x1700 0x100>;
 			vdd-pdphy-supply = <&pm660l_l7>;
@@ -646,7 +654,10 @@
 			qcom,linearize-soc;
 			qcom,fg-force-load-profile;
 /* Huaqin modify for ZQL1650 Realize HW Jeita by fangaijun  at 2018/02/6 start */
-			qcom,fg-jeita-thresholds = <0 1 59 60>;
+			/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+			//qcom,fg-jeita-thresholds = <0 1 59 60>;
+			qcom,fg-jeita-thresholds = <0 1 54 55>;
+			/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
 			qcom,fg-jeita-hyst-temp = <3>;
 /* Huaqin modify for ZQL1650 Realize HW Jeita by fangaijun  at 2018/02/6 end */
 /* Huaqin modify for ZQL1650 by fangaijun  at 2018/02/2 end */

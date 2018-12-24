@@ -86,6 +86,9 @@ extern struct switch_dev usb_alert_dev;
 static bool usb_alert_usb_otg_disable=false;
 static bool need_replugin_usb=false;
 static bool usb_otg_present=false;
+ /* Huaqin modify for ZQL1820-973 by limengxia at 2018/10/19 start */
+int custom_usb_presence = 0;
+/* Huaqin modify for ZQL1820-973 by limengxia at 2018/10/19 start */
 void smblib_asus_monitor_start(struct smb_charger *chg, int time);
 //Huaqin added by tangqingyong at 20180206 for USB alert end
 //Huaqin added by tangqingyong at 20180212 for usb_otg start
@@ -1734,6 +1737,17 @@ int smblib_get_prop_charging_enabled(struct smb_charger *chg,
 }
 /* Huaqin add for ZQL1650-189 by diganyun at 2018/02/01 end */
 
+/* Huaqin modify for ZQL1820-HQ000002 Identify adapter ID to upper by gaochao at 2018/10/24 start */
+int smblib_get_prop_adapter_id(struct smb_charger *chg,
+                                    union power_supply_propval *val)
+{
+	val->intval = ASUS_ADAPTER_ID;
+	smblib_err(chg, "adapter ID=%d\n", val->intval);
+
+	return 0;
+}
+/* Huaqin modify for ZQL1820-HQ000002 Identify adapter ID to upper by gaochao at 2018/10/24 end */
+
 int smblib_get_prop_batt_present(struct smb_charger *chg,
 				union power_supply_propval *val)
 {
@@ -2429,6 +2443,9 @@ int smblib_get_prop_usb_present(struct smb_charger *chg,
 	}
 
 	val->intval = (bool)(stat & USBIN_PLUGIN_RT_STS_BIT);
+	/* Huaqin modify for ZQL1820-973 by limengxia at 2018/10/19 start */
+	custom_usb_presence = val->intval;
+	/* Huaqin modify for ZQL1820-973 by limengxia at 2018/10/19 end */
 	return 0;
 }
 
@@ -3545,23 +3562,44 @@ void smblib_asus_monitor_start(struct smb_charger *chg, int time)
 #define EN_BAT_CHG_EN_COMMAND_TRUE		0
 #define EN_BAT_CHG_EN_COMMAND_FALSE 	BIT(0)
 #define SMBCHG_FLOAT_VOLTAGE_VALUE_4P004		0x45
+/* Huaqin modify for ZQL1820-1219 Set FV as 4095mV at factory mode to reduce charging time by gaochao at 2018/11/13 start */
+#if defined(HQ_BUILD_FACTORY)
+#define SMBCHG_FLOAT_VOLTAGE_VALUE_4P095		0x51
+#endif
+/* Huaqin modify for ZQL1820-1219 Set FV as 4095mV at factory mode to reduce charging time by gaochao at 2018/11/13 end */
 #define SMBCHG_FLOAT_VOLTAGE_VALUE_4P064		0x4D
 #define SMBCHG_FLOAT_VOLTAGE_VALUE_4P350		0x73
 #define SMBCHG_FLOAT_VOLTAGE_VALUE_4P357		0x74
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_850MA 	0x22
+/* Huaqin modify for ZQL1820-711 Set FCC as 925mA while battery temperature between 0 degree and 10 degree by gaochao at 2018/09/20 start */
+#define SMBCHG_FAST_CHG_CURRENT_VALUE_925MA 	0x25
+/* Huaqin modify for ZQL1820-711 Set FCC as 925mA while battery temperature between 0 degree and 10 degree by gaochao at 2018/09/20 end */
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_1400MA 	0x38
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_1475MA 	0x3B
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_1500MA 	0x3C
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_2000MA 	0x50
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_2050MA 	0x52
 #define SMBCHG_FAST_CHG_CURRENT_VALUE_3000MA 	0x78
+
+/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+#define ASUS_CUSTOM_JEITA_SET_MODIFY
+/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
+
 enum JEITA_state {
 	JEITA_STATE_INITIAL,
 	JEITA_STATE_LESS_THAN_0,
 	JEITA_STATE_RANGE_0_to_100,
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+	#if defined(ASUS_CUSTOM_JEITA_SET_MODIFY)
+	JEITA_STATE_RANGE_100_to_450,
+	JEITA_STATE_RANGE_450_to_550,
+	JEITA_STATE_LARGER_THAN_550
+	#else
 	JEITA_STATE_RANGE_100_to_500,
 	JEITA_STATE_RANGE_500_to_600,
 	JEITA_STATE_LARGER_THAN_600,
+	#endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
 };
 static int SW_recharge(struct smb_charger *chg)
 {
@@ -3607,6 +3645,20 @@ int smbchg_jeita_judge_state(int old_State, int batt_tempr)
 	//0 <= batt_tempr < 10
 	} else if (batt_tempr < 100) {
 		result_State = JEITA_STATE_RANGE_0_to_100;
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+	#if defined(ASUS_CUSTOM_JEITA_SET_MODIFY)
+	//10 <= batt_tempr < 45
+	} else if (batt_tempr < 450) {
+		result_State = JEITA_STATE_RANGE_100_to_450;
+	//45 <= batt_tempr < 55
+	} else if (batt_tempr < 550) {
+		result_State = JEITA_STATE_RANGE_450_to_550;
+	//55 <= batt_tempr
+	} else{
+		result_State = JEITA_STATE_LARGER_THAN_550;
+	}
+
+	#else
 	//10 <= batt_tempr < 50
 	} else if (batt_tempr < 500) {
 		result_State = JEITA_STATE_RANGE_100_to_500;
@@ -3617,6 +3669,8 @@ int smbchg_jeita_judge_state(int old_State, int batt_tempr)
 	} else{
 		result_State = JEITA_STATE_LARGER_THAN_600;
 	}
+	#endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
 
 	//BSP david: do 3 degree hysteresis
 	if (old_State == JEITA_STATE_LESS_THAN_0 && result_State == JEITA_STATE_RANGE_0_to_100) {
@@ -3625,6 +3679,25 @@ int smbchg_jeita_judge_state(int old_State, int batt_tempr)
 		}
 	}
 
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+	#if defined(ASUS_CUSTOM_JEITA_SET_MODIFY)
+	if (old_State == JEITA_STATE_RANGE_0_to_100 && result_State == JEITA_STATE_RANGE_100_to_450) {
+		if (batt_tempr <= 130) {
+			result_State = old_State;
+		}
+	}
+	if (old_State == JEITA_STATE_RANGE_450_to_550 && result_State == JEITA_STATE_RANGE_100_to_450) {
+		if (batt_tempr >= 420) {
+			result_State = old_State;
+		}
+	}
+	if (old_State == JEITA_STATE_LARGER_THAN_550 && result_State == JEITA_STATE_RANGE_450_to_550) {
+		if (batt_tempr >= 520) {
+			result_State = old_State;
+		}
+	}
+
+	#else
 	if (old_State == JEITA_STATE_RANGE_0_to_100 && result_State == JEITA_STATE_RANGE_100_to_500) {
 		if (batt_tempr <= 130) {
 			result_State = old_State;
@@ -3640,6 +3713,8 @@ int smbchg_jeita_judge_state(int old_State, int batt_tempr)
 			result_State = old_State;
 		}
 	}
+	#endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
 	printk("end smbchg_jeita_judge_state result_State=%d\n",result_State);
 	return result_State;
 }
@@ -3818,7 +3893,10 @@ void jeita_rule(void)
 		//FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P357;
 		//FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_850MA;
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P350;                   //reg=1070
-		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_1400MA;                //reg=1061
+		/* Huaqin modify for ZQL1820-711 Set FCC as 925mA while battery temperature between 0 degree and 10 degree by gaochao at 2018/09/20 start */
+		//FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_1400MA;                //reg=1061
+		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_925MA;		//FCC < 1000mA  10% accuracy
+		/* Huaqin modify for ZQL1820-711 Set FCC as 925mA while battery temperature between 0 degree and 10 degree by gaochao at 2018/09/20 end */
 		printk("%s: 0 <= temperature < 10\n", __func__);
 		rc = SW_recharge(smbchg_dev);
 		if (rc < 0) {
@@ -3856,19 +3934,36 @@ void jeita_rule(void)
 		}
 		break;
 #endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+	#if defined(ASUS_CUSTOM_JEITA_SET_MODIFY)
+	case JEITA_STATE_RANGE_100_to_450:
+	#else
 	case JEITA_STATE_RANGE_100_to_500:
+	#endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
+
 		charging_enable = EN_BAT_CHG_EN_COMMAND_TRUE;
 		//FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P357;
 		//FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_1475MA;
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P350;                   //reg=1070
-		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2000MA;             //reg=1061
-		printk("%s: 10 <= temperature < 50\n", __func__);
+		/* Huaqin modify for ZQL1820-HQ000003  Set FCC as 2050mA to decrease charging time by gaochao at 2018/10/23 start */
+		//FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2000MA;             //reg=1061
+		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2050MA;
+		/* Huaqin modify for ZQL1820-HQ000003  Set FCC as 2050mA to decrease charging time by gaochao at 2018/10/23 end */
+		printk("%s: 10 <= temperature < 45\n", __func__);
 		rc = SW_recharge(smbchg_dev);
 		if (rc < 0) {
 			printk("%s: SW_recharge failed rc = %d\n", __func__, rc);
 		}
 		break;
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+	#if defined(ASUS_CUSTOM_JEITA_SET_MODIFY)
+	case JEITA_STATE_RANGE_450_to_550:
+	#else
 	case JEITA_STATE_RANGE_500_to_600:
+	#endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
+
 #if 0
 		if (bat_volt >= 4100000 && FV_reg == 0x74) {
 			charging_enable = EN_BAT_CHG_EN_COMMAND_FALSE;
@@ -3879,15 +3974,31 @@ void jeita_rule(void)
 		}
 #endif
 		charging_enable = EN_BAT_CHG_EN_COMMAND_TRUE;
+		/* Huaqin modify for ZQL1820-1219 Set FV as 4095mV at factory mode to reduce charging time by gaochao at 2018/11/13 start */
+		#if defined(HQ_BUILD_FACTORY)
+		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P095;
+		#else
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P004;
-		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2000MA;
-		printk("%s: 50 <= temperature < 60\n", __func__);
+		#endif
+		/* Huaqin modify for ZQL1820-1219 Set FV as 4095mV at factory mode to reduce charging time by gaochao at 2018/11/13 end */
+		/* Huaqin modify for ZQL1820-HQ000003  Set FCC as 2050mA to decrease charging time by gaochao at 2018/10/23 start */
+		//FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2000MA;
+		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2050MA;
+		/* Huaqin modify for ZQL1820-HQ000003  Set FCC as 2050mA to decrease charging time by gaochao at 2018/10/23 end */
+		printk("%s: 45 <= temperature < 55\n", __func__);
 		break;
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 start */
+	#if defined(ASUS_CUSTOM_JEITA_SET_MODIFY)
+	case JEITA_STATE_LARGER_THAN_550:
+	#else
 	case JEITA_STATE_LARGER_THAN_600:
+	#endif
+	/* Huaqin modify for ZQL1820-HQ000002  Adjust JEITA according to customer require by gaochao at 2018/10/11 end */
+
 		charging_enable = EN_BAT_CHG_EN_COMMAND_FALSE;
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P004;
 		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_1475MA;
-		printk("%s: temperature >= 60\n", __func__);
+		printk("%s: temperature >= 55\n", __func__);
 		break;
 	}
 /* Huaqin add for ZQL1650-26 by diganyun at 2018/02/06 start */
