@@ -270,7 +270,9 @@
 			<&tlmm 47 0>,
 			<&tlmm 50 0>;
 		qcom,gpio-reset = <1>;
-		qcom,gpio-vdig = <2>;
+		/*Huaqin add for ZQL1820-1274 by likai at 2018/12/05 start*/
+		qcom,gpio-custom1 = <2>;
+		/*Huaqin add for ZQL1820-1274 by likai at 2018/12/05 end*/
 		qcom,gpio-req-tbl-num = <0 1 2>;
 		qcom,gpio-req-tbl-flags = <1 0 0>;
 		qcom,gpio-req-tbl-label = "CAMIF_MCLK1",
@@ -450,7 +452,9 @@
 			<&tlmm 47 0>,
 			<&tlmm 50 0>;
 		qcom,gpio-reset = <1>;
-		qcom,gpio-vdig = <2>;
+		/*Huaqin add for ZQL1820-1274 by likai at 2018/12/05 start*/
+		qcom,gpio-custom1 = <2>;
+		/*Huaqin add for ZQL1820-1274 by likai at 2018/12/05 end*/
 		qcom,gpio-req-tbl-num = <0 1 2>;
 		qcom,gpio-req-tbl-flags = <1 0 0>;
 		qcom,gpio-req-tbl-label = "CAMIF_MCLK1",

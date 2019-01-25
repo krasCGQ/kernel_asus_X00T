@@ -537,7 +537,11 @@ static int mmc_decode_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		if (card->ext_csd.sectors > (2u * 1024 * 1024 * 1024) / 512)
 			mmc_card_set_blockaddr(card);
 /* Huaqin add for ZQL1650-43 by lanshiming at 2018/1/18 start*/
-		if(card->ext_csd.sectors > 80000000)
+/* Huaqin add for ZQL1820-1359 by xudongfang at 2018/12/03 start*/
+		if(card->ext_csd.sectors > 160000000)
+			sprintf(card->mmc_total_size, "128");
+		else if(card->ext_csd.sectors > 80000000)
+/* Huaqin add for ZQL1820-1359 by xudongfang at 2018/12/03 end*/
 			sprintf(card->mmc_total_size, "64");
 		else if(card->ext_csd.sectors > 50000000)
 			sprintf(card->mmc_total_size, "32");
