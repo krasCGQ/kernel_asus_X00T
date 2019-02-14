@@ -1551,8 +1551,9 @@ int32_t ito_selftest_open(void)
 	NVT_LOG("++TestResult_Noise = %d \n",TestResult_Noise);
 	NVT_LOG("++TestResult_Short = %d \n",TestResult_Short);
 	NVT_LOG("++TestResult_Open = %d \n",TestResult_Open);
-
-	if(TestResult_FWMutual == 0 && TestResult_Short == 0 && TestResult_Open == 0 )
+/* Huaqin add CC && Noise for ITO test by xudongfang at 2018/12/17 start */
+	if(TestResult_FWMutual == 0 && TestResult_Short == 0 && TestResult_Open == 0 && TestResult_FW_CC==0 && TestResult_Noise==0)
+/* Huaqin add CC && Noise for ITO test by xudongfang at 2018/12/17 end */
 	{
 		nvt_TestResultLen = 1;
 	}
