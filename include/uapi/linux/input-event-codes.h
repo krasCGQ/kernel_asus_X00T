@@ -667,14 +667,18 @@
 #define KEY_SARSENSOR_NEAR		0x2ea
 #define KEY_SARSENSOR_FAR		0x2eb
 
-/* Huaqin add  for TT1176710 by liunianliang at 2018/03/30 start */
-#define KEY_TP_GESTURE_W 	0x2ec
-#define KEY_TP_GESTURE_E 	0x2ed
-#define KEY_TP_GESTURE_S 	0x2ee
-#define KEY_TP_GESTURE_Z 	0x2ef
-#define KEY_TP_GESTURE_C 	0x2f0
-#define KEY_TP_GESTURE_V 	0x2f1
-/* Huaqin add  for TT1176710 by liunianliang at 2018/03/30 end */
+//Huaqin add for asus gesture by xudongfang at 2018/9/5 start
+#define KEY_TP_GESTURE_SWIPE_UP 	0x2F6
+#define KEY_TP_GESTURE_DOUBLE_CLICK 	0x2F7
+#define KEY_TP_GESTURE_C 		0x2F0
+#define KEY_TP_GESTURE_E 		0x2ED
+#define KEY_TP_GESTURE_S 		0x2EE
+#define KEY_TP_GESTURE_V 		0x2F1
+#define KEY_TP_GESTURE_W 		0x2EC
+#define KEY_TP_GESTURE_Z 		0x2EF
+//Huaqin add for asus gesture by xudongfang at 2018/9/5 end
+
+
 
 /* We avoid low common keys in module aliases so they don't get huge. */
 #define KEY_MIN_INTERESTING	KEY_MUTE

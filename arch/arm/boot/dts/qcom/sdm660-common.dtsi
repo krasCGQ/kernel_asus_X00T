@@ -322,7 +322,9 @@
 	ssphy: ssphy@c010000 {
 		compatible = "qcom,usb-ssphy-qmp-v2";
 		// Added by huqinmin remove Type-C for micro-usb 2018/1/31 begin
-		status = "disable";
+		/* Huaqin modify for ZQL1820-HQ000003 Optimize power consumption by diabling USB3.0 by gaochao at 2018/09/04 start */
+		status = "disabled";
+		/* Huaqin modify for ZQL1820-HQ000003 Optimize power consumption by diabling USB3.0 by gaochao at 2018/09/04 end */
 		// Added by huqinmin remove Type-C for micro-usb 2018/1/31 end
 		reg = <0xc010000 0xe18>,
 			<0x01fcb244 0x4>,

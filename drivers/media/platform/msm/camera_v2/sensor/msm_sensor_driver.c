@@ -94,7 +94,7 @@ static struct v4l2_subdev_info msm_sensor_driver_subdev_info[] = {
 
 /*Huaqin add for ZQL1650-190 by lizihao at 2018/01/24 start*/
 #if CAM_MODULE_INFO_CONFIG
-static char *cameraModuleInfo[3] = {NULL, NULL, NULL};
+static char *cameraModuleInfo[4] = {NULL, NULL, NULL,NULL};
 
 #define CAM_MODULE_INFO "cameraModuleInfo"
 
@@ -107,10 +107,11 @@ static ssize_t cameraModuleInfo_read
 	int rc = 0;
 	/*Huaqin add for ZQL1650-190 by lizihao at 2018/03/09 start*/
 	snprintf(buf, 150,
-			"rear camera:%s\nfront camera:%s\nrear sub camera:%s\n",
+			"rear camera:%s\nfront camera:%s\nrear sub camera:%s\nrear2 camera:%s\n",
 			cameraModuleInfo[0],
 			cameraModuleInfo[1],
-			cameraModuleInfo[2]);
+			cameraModuleInfo[2],
+			cameraModuleInfo[3]);
 	/*Huaqin add for ZQL1650-190 by lizihao at 2018/03/09 end*/
 
 	rc = simple_read_from_buffer(page, size, ppos, buf, strlen(buf));

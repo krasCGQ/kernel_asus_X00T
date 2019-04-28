@@ -40,6 +40,15 @@
 #include "u_os_desc.h"
 #include "configfs.h"
 
+//Huaqin add for ZQL1830-1649 by yangxinlu open adb trace log at 2018/11/02 start
+#ifdef HQ_BUILD_FACTORY
+#undef  dev_dbg
+#define dev_dbg dev_info
+#undef  pr_debug
+#define pr_debug pr_info
+#endif
+//Huaqin add for ZQL1830-1649 by yangxinlu open adb trace log at 2018/11/02 end
+
 #define FUNCTIONFS_MAGIC	0xa647361 /* Chosen by a honest dice roll ;) */
 
 #define NUM_PAGES	10 /* # of pages for ipc logging */

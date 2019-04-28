@@ -624,6 +624,12 @@ static const struct usb_device_id	products [] = {
 	USB_INTERFACE_INFO(USB_CLASS_MISC, 1, 1),
 	.driver_info = (unsigned long) &rndis_poll_status_info,
 }, {
+//Huaqin modify for rndis in ubuntu 1264750 / 1265752  by dingyuchen at 2018/12/26 start
+	 /* RNDIS for NDIS 6 tethering */
+	 USB_INTERFACE_INFO(USB_CLASS_MISC, 4, 1),
+	 .driver_info = (unsigned long) &rndis_info,
+//Huaqin modify for rndis in ubuntu 1264750 / 1265752  by dingyuchen at 2018/12/26 end
+}, {
 	/* RNDIS for tethering */
 	USB_INTERFACE_INFO(USB_CLASS_WIRELESS_CONTROLLER, 1, 3),
 	.driver_info = (unsigned long) &rndis_info,

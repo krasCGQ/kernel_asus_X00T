@@ -453,6 +453,9 @@ struct mdss_dsi_ctrl_pdata {
 	int irq_cnt;
 	int disp_te_gpio;
 	int rst_gpio;
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 start*/
+	int tp_rst_gpio;
+/* Huaqin modify for time sequence by qimaokang at 2018/09/28 end*/
 	int disp_en_gpio;
 	int bklt_en_gpio;
 	bool bklt_en_gpio_invert;

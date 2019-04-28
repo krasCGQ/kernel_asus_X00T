@@ -2535,7 +2535,7 @@ int msm_mi2s_snd_startup(struct snd_pcm_substream *substream)
 			/* Huaqin add sar switcher by chenyijun5 at 2018/03/20 start*/
 			#ifdef CONFIG_INPUT_SX9310
 			pr_debug("%s before open PA, close SAR!\n", __func__);
-			sar_switch(0);
+			//sar_switch(0);
 			#endif
 			/* Huaqin add sar switcher by chenyijun5 at 2018/03/20 end*/
 		    msm_cdc_pinctrl_select_active_state(pdata->tert_mi2s_gpio_p);
@@ -2592,7 +2592,7 @@ void msm_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 			/* Huaqin add sar switcher by chenyijun5 at 2018/03/20 start*/
 			#ifdef CONFIG_INPUT_SX9310
 			pr_debug("%s after close PA, open SAR!\n", __func__);
-			sar_switch(1);
+			//sar_switch(1);
 			#endif
 			/* Huaqin add sar switcher by chenyijun5 at 2018/03/20 end*/
 		}

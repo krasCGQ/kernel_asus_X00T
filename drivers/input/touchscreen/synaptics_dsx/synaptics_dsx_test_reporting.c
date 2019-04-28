@@ -4141,8 +4141,7 @@ exit:
 
 	return fail_cnt;
 }
-/* Huaqin modify for ZQL1650-1672 by zhangxiude at 2018/07/12  start */
-/*
+
 static int test_noise(void)
 {
 	int retval = 0;
@@ -4189,8 +4188,7 @@ exit:
 	g_tddi_noise_data_output = NULL;
 	return fail_cnt;
 }
-*/
-/* Huaqin modify forZQL1650-1672 by zhangxiude at 2018/07/12  end */
+
 static int test_ee_short(void)
 {
 	int retval = 0;
@@ -4300,8 +4298,7 @@ ssize_t ito_test(void)
 		dev_err(rmi4_data->pdev->dev.parent,"OK to do test full raw\n");
 	}
 	fail_cnt += tmp_fail_cnt;
-/* Huaqin modify for ZQL1650-1672 by zhangxiude at 2018/07/12  start */
-/*
+
 	tmp_fail_cnt = test_noise();
 	if (tmp_fail_cnt) {
 		dev_err(rmi4_data->pdev->dev.parent,"fail to do test noise\n");
@@ -4309,8 +4306,7 @@ ssize_t ito_test(void)
 		dev_err(rmi4_data->pdev->dev.parent,"OK to do test noise\n");
 	}
 	fail_cnt += tmp_fail_cnt;
-*/
-/* Huaqin modify for ZQL1650-1672 by zhangxiude at 2018/07/12  end */
+
 	tmp_fail_cnt = test_ee_short();
 	if (tmp_fail_cnt) {
 		dev_err(rmi4_data->pdev->dev.parent,"fail to do test ee short\n");
