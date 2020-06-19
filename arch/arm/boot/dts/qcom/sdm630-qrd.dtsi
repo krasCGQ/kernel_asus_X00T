@@ -367,7 +367,7 @@
 			debounce-interval = <15>;
 		};
 	};
-
+/*
 	hbtp {
 		compatible = "qcom,hbtp-input";
 		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
@@ -385,6 +385,7 @@
 		qcom,afe-power-on-delay-us = <1000>;
 		qcom,afe-power-off-delay-us = <6>;
 	};
+*/
 };
 
 &qusb_phy0 {
